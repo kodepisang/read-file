@@ -1,0 +1,54 @@
+public function Open_dir()
+	{
+		$dir = "upload/Data/";
+		$tamp=array();
+		// Open a directory, and read its contents
+		if (is_dir($dir)){
+			if ($dh = opendir($dir)){
+				while (($file = readdir($dh)) !== false){
+					if(substr($file, -3)=="bin")
+					{
+						array_push($tamp,$file);
+					}
+				
+				}
+				closedir($dh);
+			}
+		}
+		return $tamp;
+	}
+	public function open($title)
+	{
+	
+		// print_r($data);
+		$file = file('upload/Data/'.$title); 
+		$tamp=array();
+		foreach ($file as $line){
+				if (strpos($line,":")) {
+					$charSet = preg_replace(array('/\s{2,}/', '/[\t\n]/'), ' ', $line);
+					$charSet = rtrim($charSet);
+					$r_data	 =str_replace(' ', '', $charSet);
+					$row=explode(":",$r_data);
+					$key=array($row[0]);
+					$val=array($row[1]);
+					$x_tamp=array_combine($key,$val);
+					array_push($tamp,$x_tamp);				
+				}
+		}
+		return $tamp;
+	}
+	public function read_data()
+	{
+		$dir=$this->Open_dir();
+		echo "<pre>";
+		for ($i=0; $i <count($dir) ; $i++) { 
+				$data_file=$this->open($dir[$i]);
+				echo "nama File =================================== > ".$dir[$i].'<br>';
+				foreach ($data_file as $txt) {
+					foreach ($txt as $label => $val) {
+							echo $label.' : '. $val.'<br>';
+					}
+				}
+		}
+
+	}
